@@ -14,7 +14,7 @@ class Wordstats(object):
 		'@','_','-','[',']','{','}','%','©','+','-','=','*','&','/','º',
 		'ª','”','“','(',')',]
 
-
+ 
 	def __test_file(self, file_path):
 
 		#test if the files exist. if it doesn't it will create one with the same path
@@ -31,7 +31,14 @@ class Wordstats(object):
 			file.close()
 
 
-	def __text_preparation(self, text):
+	def __change_characters(self, text):
+
+		"""
+		Receives a string, remove special characters and separete words into tuples
+		
+		"""
+
+		#to make the text not case sensitive
 
 		text = text.lower() 
 
@@ -45,12 +52,40 @@ class Wordstats(object):
 
 				new_text += character
 
-        #turn the text into a tuple of words
+		#turn the text into a tuple of words
 
 		new_text = new_text.split()
 
 		return new_text
+	
 
+	def __array_stringfy(self, text):
+
+		"""
+		Receives a array of strings and make them into one string
+		
+		"""
+
+		temp_text = ""
+
+		for n in range(len(text)):
+
+			temp_text += text[n];
+
+		new_text = temp_text
+
+		return new_text
+	       
+	
+
+	def print_file(self, file_path):
+
+		file = open(file_path, 'r')
+		text = file.readlines()
+
+
+		print(text)
+		file.close()
 
 
 	def word_frequence(self, word, file_path):
@@ -83,21 +118,13 @@ class Wordstats(object):
 		file = open(file_path, 'r')
 		text = file.readlines()
 
-		#each line is keeped in a indice of an array
-		#it removes the text from the arrays extracted from the file		
+		#turn the array into a string
+		text = self.__array_stringfy(text)
 
-		temp_text = ""
-
-		for n in range(len(text)):
-
-			temp_text += text[n];
-
-		text = temp_text
-
-		text = self.__text_preparation(text)
+		#turn the array int a tuple of words
+		text = self.__change_characters(text)
 
 		words = 0
-
 		for word in text:
 
 			words += 1;
@@ -117,7 +144,6 @@ class Wordstats(object):
 		self.__test_file(file_path)
 		file = open(file_path, 'r')
 		text = file.readlines()
-		print(text)
 		lines = 0
 
 		for line in text:
@@ -129,21 +155,45 @@ class Wordstats(object):
 
 		return lines
 
-	def caracters_count(self,file_path):
+	def characters_count(self,file_path):
 
+		self.__test_file(file_path)
+		file = open(file_path, 'r')
+		text = file.readlines()
+		text = self.__array_stringfy(text)
 
-		"""
-		Returns how many characters are on the document.
-		"""
+		characters = 0
 
-		pass
+		for c in text:
+			characters += 1
 
-	def caracters_count_ns(self,file_path):
+		
+		file.close()
+
+		return characters
+
+	def characters_count_ns(self,file_path):
 
 
 		"""
 		Returns how many characters are on the document (not counting the space between words)
 		"""
 
-		pass
+		
+		self.__test_file(file_path)
+		file = open(file_path, 'r')
+		text = file.readlines()
+		text = self.__array_stringfy(text)
 
+		characters = 0
+
+		for c in text:
+
+			if c != " ":
+				
+				characters += 1
+
+		
+		file.close()
+
+		return characters
