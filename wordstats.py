@@ -55,7 +55,6 @@ class Wordstats(object):
 		#turn the text into a tuple of words
 
 		new_text = new_text.split()
-
 		return new_text
 	
 
@@ -73,10 +72,9 @@ class Wordstats(object):
 			temp_text += text[n];
 
 		new_text = temp_text
-
 		return new_text
 	       
-	
+	"""
 
 	def print_file(self, file_path):
 
@@ -86,7 +84,7 @@ class Wordstats(object):
 
 		print(text)
 		file.close()
-
+	"""
 
 	def word_frequence(self, word, file_path):
 
@@ -95,9 +93,22 @@ class Wordstats(object):
 
 		"""
 
-		pass
+		self.__test_file(file_path)
+		file = open(file_path, 'r')
+		text = file.readlines()
+		text = self.__array_stringfy(text)
+		text = self.__change_characters(text)
 
+		frequency = 0
+		
+		for w in text:
+			
+			if w == word:
 
+				frequency += 1
+		file.close()
+		return frequency
+		
 	def words_frequency(self,words_range):
 
 		"""
@@ -129,18 +140,15 @@ class Wordstats(object):
 
 			words += 1;
 
-
 		file.close()
-
 		return words
 
 	def lines_count(self, file_path):
 
-
 		"""
 		Returns how many lines are on the document.
 		"""
-
+		
 		self.__test_file(file_path)
 		file = open(file_path, 'r')
 		text = file.readlines()
@@ -152,7 +160,6 @@ class Wordstats(object):
 
 
 		file.close()
-
 		return lines
 
 	def characters_count(self,file_path):
@@ -166,7 +173,6 @@ class Wordstats(object):
 
 		for c in text:
 			characters += 1
-
 		
 		file.close()
 
@@ -174,11 +180,9 @@ class Wordstats(object):
 
 	def characters_count_ns(self,file_path):
 
-
 		"""
 		Returns how many characters are on the document (not counting the space between words)
 		"""
-
 		
 		self.__test_file(file_path)
 		file = open(file_path, 'r')
@@ -192,8 +196,7 @@ class Wordstats(object):
 			if c != " ":
 				
 				characters += 1
-
-		
+				
 		file.close()
 
 		return characters
