@@ -107,7 +107,9 @@ class Wordstats(object):
 			if w == word:
 
 				frequency += 1
+
 		file.close()
+
 		return frequency
 		
 	def words_frequency(self,file_path, words_range):
@@ -143,13 +145,23 @@ class Wordstats(object):
 				frequency[word] = 1
 				
                 #Sort the dicionary by the value and turn it into a matrix
+		c = 1
 	
-		for word in sorted(frequency, key=frequency.get, reverse=True):
+		for word in sorted(frequency, key = frequency.get, reverse = True):
 
 			line.append(word)
 			line.append(frequency[word])
 			sorted_frequency.append(line)
 			line = []
+
+			#to only return within the specified range
+			if c == words_range:
+
+				break
+			
+			else:
+
+				c += 1
 
 		file.close()
 
@@ -177,7 +189,7 @@ class Wordstats(object):
 		words = 0
 		for word in text:
 
-			words += 1;
+			words += 1
 
 		file.close()
 		return words
