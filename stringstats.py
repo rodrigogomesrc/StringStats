@@ -1,253 +1,171 @@
-class Wordstats(object):
+import re
 
-	def __init__(self):
+class StringStats(object):
 
-		"""
-		This library provides statistis about the content of a file, such as words, lines, characters.
-
-		To simplify and avoid duplicated words, the texts provided recieves treatment in order to eliminate 
-		special characters accentuation and pontuation. Also, the code is not case sensitive.
-		For this reason, this library is not indicated in cases that this differenciation is necessary.
+	def word_frequency(self, words, text):
 
 		"""
-		self.__special_characters = ['.',',',';',':','"','!','#','?','"',
-		'@','_','-','[',']','{','}','%','©','+','-','=','*','&','/','º',
-		'ª','”','“','(',')',]
-
- 
-	def __test_file(self, file_path):
-
-		#test if the files exist. if it doesn't it will create one with the same path
-
-		try:
-
-			file = open(file_path, 'r')
-			text = file.readlines()
-			file.close()
-
-		except:
-
-			file = open(file_path, 'r')
-			file.close()
-
-
-	def __change_characters(self, text):
-
-		"""
-		Receives a string, remove special characters, separate the words and put them inside an array
 		
-		"""
+		Returns a how many times a word or a list of words appear on a text
 
-		#to make the text not case sensitive
+		Pass a string to the "words" parameter if you want to search for a single word
 
-		text = text.lower() 
+		Pass a list to the "words" parameter if you want to more than a word to count as one
+		This is useful if you want to count to terms that mean the same as one
 
-		new_text = ""
-
-		#remove the unwanted characters
-
-		for character in text:
-
-			if character not in self.__special_characters:
-
-				new_text += character
-
-		#turn the text into a array of words
-
-		new_text = new_text.split()
-
-		return new_text
-	
-
-	def __array_stringfy(self, array):
+		This function will only count the appearence of a word if it's separeted by spaces
 
 		"""
-		Receives a array of strings and make them into one string
-		
-		"""
+		stext = text.split()
 
-		temp_text = ""
+		if type(words) is list:
 
-		for n in range(len(array)):
+			frequency = 0
+			for w in stext:
+				if w in words:
+					frequency += 1
 
-			temp_text += array[n];
+		elif type(words) is str:
 
-		new_text = temp_text
-		return new_text
-	       
-	"""
+			frequency = 0
+			for w in stext:
+				if w == words:
+					frequency += 1
+		else:
 
-	def print_file(self, file_path):
-
-		file = open(file_path, 'r')
-		text = file.readlines()
-
-
-		print(text)
-		file.close()
-	"""
-
-	def word_frequence(self, word, file_path):
-
-		"""
-		Returns a int representing how many times a word appear on the file.
-
-		"""
-
-		self.__test_file(file_path)
-		file = open(file_path, 'r')
-		text = file.readlines()
-		text = self.__array_stringfy(text)
-		text = self.__change_characters(text)
-
-		frequency = 0
-		
-		for w in text:
-			
-			if w == word:
-
-				frequency += 1
-
-		file.close()
+			return False
 
 		return frequency
-		
-	def words_frequency(self,file_path, words_range):
-
-		"""
-		Returns the frequency of every word ordened by the frequency. the argument "words_range" limits how mahy words is shown.
-
-		"""
-
-		self.__test_file(file_path)
-		file = open(file_path, 'r')
-		text = file.readlines()
-		
-		#turn it into one string
-		text = self.__array_stringfy(text)
-		
-		#turn it into an array of words
-		text = self.__change_characters(text)
 	
-		frequency = {}
-		sorted_frequency = []
-		line = []
 
-		#count how many times a word appear
+	def word_frequency_list(self, text, limit=False):
+		
+		"""
 
-		for word in text:
-			
-			if word in frequency:
+		Use this function to return a dictionary with a ordened list of dictionaries
+		containing the ranking of the most frequent words on the text:
 
-				frequency[word] = frequency[word] + 1
+		The fiels of the dictionaries are: "position" (on the ranking), "frequency" and "word"
+
+		Use "limit=<number>" to limitate how many values of the list are returned 
+
+		"""
+		if type(text) is str:
+
+			frequency = {}
+			text_list = text.split()
+			frequency_list = []
+
+			for w in text_list:
+
+				if w in frequency:
+
+					frequency[w] += 1
+				else:
+
+					frequency[w] = 1
+
+			for k, v in frequency.items():
+				frequency_list.append({"word": k, "frequency": v})
+
+			frequency_list.sort(key=lambda x: x["frequency"], reverse=True)
+
+			count = 1
+			for f in frequency_list:
+				f["Position"] = str(count)
+				count += 1
+
+			if limit:
+				return frequency_list[0:limit]
+
 			else:
+				return frequency_list
 
-				frequency[word] = 1
-				
-                #Sort the dicionary by the value and turn it into a matrix
-		c = 1
-	
-		for word in sorted(frequency, key = frequency.get, reverse = True):
+		else:
+			return False
 
-			line.append(word)
-			line.append(frequency[word])
-			sorted_frequency.append(line)
-			line = []
-
-			#to only return within the specified range
-			if c == words_range:
-
-				break
-			
-			else:
-
-				c += 1
-
-		file.close()
-
-		return sorted_frequency
-		
-		
-
-	def words_count(self, file_path):
+	def character_count(self, character, text):
 
 		"""
 		
-		Returns how many words are written on the document.
+		Returns how many time the specified characters appear on the provided text
 
 		"""
-		self.__test_file(file_path)
-		file = open(file_path, 'r')
-		text = file.readlines()
 
-		#turn the array into a string
-		text = self.__array_stringfy(text)
+		if type(text) is str:
 
-		#turn the array int a tuple of words
-		text = self.__change_characters(text)
+			frequency = 0
+			for c in text:
 
-		words = 0
-		for word in text:
+				if c == character:
+					frequency += 1
 
-			words += 1
+			return frequency
 
-		file.close()
-		return words
+		else:			
+			return False
 
-	def lines_count(self, file_path):
+
+	def character_frequency_list(self, text):
 
 		"""
-		Returns how many lines are on the document.
-		"""
-		
-		self.__test_file(file_path)
-		file = open(file_path, 'r')
-		text = file.readlines()
-		lines = 0
 
-		for line in text:
+		Return a list of dictionaries with the frequency of each character on the provided text
 
-			lines += 1
+		the dictionaries have the following fields:
 
-
-		file.close()
-		return lines
-
-	def characters_count(self,file_path):
-
-		self.__test_file(file_path)
-		file = open(file_path, 'r')
-		text = file.readlines()
-		text = self.__array_stringfy(text)
-
-		characters = 0
-
-		for c in text:
-			characters += 1
-		
-		file.close()
-
-		return characters
-
-	def characters_count_ns(self,file_path):
+		"position" (on the ranking), "character" and "frequency"
 
 		"""
-		Returns how many characters are on the document (not counting the space between words)
+		if type(text) is str:
+
+			frequency = {}
+			frequency_list = []
+			treated_text = text.replace(" ","")
+
+			for c in treated_text:
+				if c in frequency:
+					frequency[c] += 1
+				else:
+					frequency[c] = 1
+
+			for k, v in frequency.items():
+				frequency_list.append({"character": k, "frequency": v})
+
+			frequency_list.sort(key=lambda x: x["frequency"], reverse=True)
+			return frequency_list
+
+		else:			
+			return False
+
+	def words_count(self, text):
+
 		"""
-		
-		self.__test_file(file_path)
-		file = open(file_path, 'r')
-		text = file.readlines()
-		text = self.__array_stringfy(text)
 
-		characters = 0
+		Return how many words are on the provided text
 
-		for c in text:
+		"""
+		if type(text) is str:
 
-			if c != " ":
-				
-				characters += 1
-				
-		file.close()
+			stext = text.split()
+			return len(stext)
 
-		return characters
+		else:
+			return False
+
+	def sentence_frequency(self, sentence, text):
+
+		"""
+		Returns how many time a sentence appears on the provided text
+
+		Notice that if you pass a string as the sentence parameter and this string appears inside
+		word, it will count like an appearence and thus increment the frequency. 
+		That means that "rd" would be counted inside "word". To count strings as a full word use the
+		"word_frequency" function instead.
+
+		"""
+		result = re.findall(sentence + "+", text)
+		return len(result)
+
+
+stringstats = StringStats()
