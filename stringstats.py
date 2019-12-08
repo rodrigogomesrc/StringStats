@@ -1,4 +1,5 @@
 import re
+from collections import Counter
 
 class StringStats(object):
 
@@ -35,7 +36,7 @@ class StringStats(object):
 
 			return False
 
-		return frequency
+		return 
 	
 
 	def word_frequency_list(self, text, limit=False):
@@ -81,8 +82,7 @@ class StringStats(object):
 			else:
 				return frequency_list
 
-		else:
-			return False
+		return
 
 	def character_count(self, character, text):
 
@@ -102,16 +102,13 @@ class StringStats(object):
 
 			return frequency
 
-		else:			
-			return False
-
+		return
 
 	def character_frequency_list(self, text):
 
 		"""
 
-		Return a list of dictionaries with the frequency of each character on the provided text
-
+		Return a ordered dictionary with the frequency of each character on the provided text
 		the dictionaries have the following fields:
 
 		"position" (on the ranking), "character" and "frequency"
@@ -119,24 +116,17 @@ class StringStats(object):
 		"""
 		if type(text) is str:
 
-			frequency = {}
-			frequency_list = []
-			treated_text = text.replace(" ","")
+			text_counter = Counter(text)
+			frequency = dict()
 
-			for c in treated_text:
-				if c in frequency:
-					frequency[c] += 1
-				else:
-					frequency[c] = 1
+			for i in sorted(dict(text_counter)):
 
-			for k, v in frequency.items():
-				frequency_list.append({"character": k, "frequency": v})
+				frequency[i] = text_counter[i]
 
-			frequency_list.sort(key=lambda x: x["frequency"], reverse=True)
-			return frequency_list
+			return frequency
 
-		else:			
-			return False
+		return 
+
 
 	def words_count(self, text):
 
@@ -150,8 +140,7 @@ class StringStats(object):
 			stext = text.split()
 			return len(stext)
 
-		else:
-			return False
+		return
 
 	def sentence_frequency(self, sentence, text):
 
