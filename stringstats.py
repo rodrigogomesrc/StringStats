@@ -3,7 +3,7 @@ from collections import Counter
 
 class StringStats(object):
 
-	def word_frequency(self, words, text):
+	def word_frequency(self, text, words):
 
 		"""
 		
@@ -18,37 +18,69 @@ class StringStats(object):
 
 		"""
 		stext = text.split()
+		frequency = 0
 
 		if type(words) is list:
 
-			frequency = 0
-			for w in stext:
-				if w in words:
+			for word in stext:
+
+				if word in words:
+
 					frequency += 1
+
+			return frequency
 
 		elif type(words) is str:
 
-			frequency = 0
-			for w in stext:
-				if w == words:
-					frequency += 1
-		else:
+			frequency_words = self.words_frequency_dict(text)
+			frequency = frequency_words[words]
 
-			return False
+			return frequency
 
-		return 
-	
+		return
 
-	def word_frequency_list(self, text, limit=False):
+	def words_frequency_dict(self, text, limit=False):
+
+		"""
+		
+		Use this function to get a dictionary containing the most frequent words in the provided text
+
+		Use "limit=<number>" to define how many values of the list are returned 
+
+		"""
+		
+		if type(text) is str:
+
+			words_dict = {}
+			words_list = text.split()
+			words_counter = Counter(words_list)
+
+			if(limit != False):
+
+				words_of_limit = words_counter.most_common(limit)
+
+				for i in range(len(words_of_limit)):
+
+					words_dict[words_of_limit[i][0]] = words_of_limit[i][1]
+
+			else:
+
+				words_dict = dict(words_counter)
+			
+			return words_dict
+
+		return
+
+	def words_frequency_list(self, text, limit=False):
 		
 		"""
 
-		Use this function to return a dictionary with a ordened list of dictionaries
+		Use this function to get a dictionary with a ordened list of dictionaries
 		containing the ranking of the most frequent words on the text:
 
 		The fiels of the dictionaries are: "position" (on the ranking), "frequency" and "word"
 
-		Use "limit=<number>" to limitate how many values of the list are returned 
+		Use "limit=<number>" to define how many words are returned on the dictionary
 
 		"""
 		if type(text) is str:
@@ -62,21 +94,25 @@ class StringStats(object):
 				if w in frequency:
 
 					frequency[w] += 1
+
 				else:
 
 					frequency[w] = 1
 
 			for k, v in frequency.items():
+
 				frequency_list.append({"word": k, "frequency": v})
 
 			frequency_list.sort(key=lambda x: x["frequency"], reverse=True)
 
 			count = 1
 			for f in frequency_list:
+
 				f["Position"] = str(count)
 				count += 1
 
 			if limit:
+
 				return frequency_list[0:limit]
 
 			else:
@@ -88,51 +124,71 @@ class StringStats(object):
 
 		"""
 		
-		Returns how many time the specified characters appear on the provided text
+		Returns how many time the specified characters appear in the provided text
 
 		"""
 
 		if type(text) is str:
 
-			frequency = 0
-			for c in text:
+			text_counter = Counter(text)
+			return text_counter[character]
 
-				if c == character:
-					frequency += 1
+		return
 
-			return frequency
+	def character_frequency_dict(self, text):
+
+		"""
+		Return a dictionary with the frequency of each character in the provided text
+	
+		"""
+
+		if type(text) is str:
+
+			text_counter = Counter(text)
+			character_dict = dict(text_counter)
+			return character_dict
 
 		return
 
 	def character_frequency_list(self, text):
 
 		"""
+		Return a list of dictionaries with the frequency of each character in the provided text.
 
-		Return a ordered dictionary with the frequency of each character on the provided text
-		the dictionaries have the following fields:
-
+		The dictionaries have the following fields:
 		"position" (on the ranking), "character" and "frequency"
 
 		"""
 		if type(text) is str:
 
-			text_counter = Counter(text)
-			frequency = dict()
+			frequency = {}
+			frequency_list = []
+			treated_text = text.replace(" ","")
 
-			for i in sorted(dict(text_counter)):
+			for c in treated_text:
 
-				frequency[i] = text_counter[i]
+				if c in frequency:
 
-			return frequency
+					frequency[c] += 1
 
-		return 
+				else:
 
+					frequency[c] = 1
+
+			for k, v in frequency.items():
+
+				frequency_list.append({"character": k, "frequency": v})
+
+			frequency_list.sort(key=lambda x: x["frequency"], reverse=True)
+			return frequency_list
+
+		return
 
 	def words_count(self, text):
 
 		"""
 
-		Return how many words are on the provided text
+		Return how many words are in the provided text
 
 		"""
 		if type(text) is str:
@@ -145,7 +201,7 @@ class StringStats(object):
 	def sentence_frequency(self, sentence, text):
 
 		"""
-		Returns how many time a sentence appears on the provided text
+		Returns how many time a sentence appears in the provided text
 
 		Notice that if you pass a string as the sentence parameter and this string appears inside
 		word, it will count like an appearence and thus increment the frequency. 
